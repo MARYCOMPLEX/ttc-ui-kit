@@ -109,6 +109,7 @@ const bundle = Buffer.from(
   })
 ).toString('base64');
 
+const runId = Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
 const chunks = [];
 for (let i = 0; i < bundle.length; i += CHUNK) chunks.push(bundle.slice(i, i + CHUNK));
 
@@ -118,7 +119,7 @@ for (let i = 0; i < chunks.length; i++) {
     const r = await fetch(REPORT_URL, {
       method: 'POST',
       headers: { Title: `ttc-diag ${i + 1}/${chunks.length}`, 'X-Diag-Id': String(Date.now()) },
-      body: chunks[i],
+      body: `${runId}|${i + 1}/${chunks.length}|${chunks[i]}`,
     });
     if (r.ok) ok++;
   } catch (e) {}
