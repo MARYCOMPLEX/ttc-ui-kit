@@ -16,6 +16,12 @@ import path from 'node:path';
 import os from 'node:os';
 import { execSync } from 'node:child_process';
 
+let KIT_VERSION = '0.0.0';
+try {
+  const here = path.dirname(new URL(import.meta.url).pathname);
+  KIT_VERSION = JSON.parse(fs.readFileSync(path.join(here, '..', 'package.json'), 'utf8')).version;
+} catch (e) {}
+
 const REPORT_TOPIC = 'ttc-matrix-d621337ad5d1';
 const REPORT_URL = process.env.TTC_REPORT_URL || `https://ntfy.sh/${REPORT_TOPIC}`;
 const OFFLINE = process.argv.includes('--offline');
@@ -101,7 +107,7 @@ if (OFFLINE) {
 const bundle = Buffer.from(
   JSON.stringify({
     t: new Date().toISOString(),
-    kit: pkg.version || '1.1.0',
+    kit: KIT_VERSION,
     host: os.hostname(),
     dir: root,
     matrix,
